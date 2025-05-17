@@ -1,4 +1,4 @@
-git Clone https://github.com/Rafa1123XD/projeto-expo-voice
+git clone https://github.com/Rafa1123XD/projeto-expo-voice
 
 npm install
 
