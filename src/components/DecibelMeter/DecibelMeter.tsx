@@ -1,6 +1,6 @@
 import { memo } from 'react';
-import { Text, View } from 'react-native';
-import { styles } from './styles';
+import { Text, View, useColorScheme } from 'react-native';
+import { getStyles } from './styles';
 
 interface DecibelMeterProps {
   currentDecibels: number;
@@ -11,6 +11,9 @@ export const DecibelMeter = memo(function DecibelMeter({
   currentDecibels, 
   peakDecibels 
 }: DecibelMeterProps) {
+  const colorScheme = useColorScheme();
+  const styles = getStyles(colorScheme);
+
   return (
     <View style={styles.container}>
       <Text style={styles.decibelText}>

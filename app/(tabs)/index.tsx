@@ -1,17 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { DecibelMeter } from '../../src/components/DecibelMeter/DecibelMeter';
+import { NoiseFloorCalibrator } from '../../src/components/NoiseFloorCalibrator/NoiseFloorCalibrator';
 import { RecordButton } from '../../src/components/RecordButton/RecordButton';
 import { useAudioRecorder } from '../../src/hooks/useAudioRecorder';
 
 export default function TabOneScreen() {
-  const { isRecording, decibels, peakDecibels, startRecording, stopRecording } = useAudioRecorder();
+  const colorScheme = useColorScheme();
+  const { 
+    isRecording, 
+    decibels, 
+    peakDecibels, 
+    noiseFloor,
+    startRecording, 
+    stopRecording,
+    calibrateNoiseFloor 
+  } = useAudioRecorder();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Gravador de Voz</Text>
+      <Text style={[
+        styles.title,
+        { color: colorScheme === 'dark' ? '#ffffff' : '#000000' }
+      ]}>
+        Gravador de Voz
+      </Text>
       <DecibelMeter
         currentDecibels={decibels}
         peakDecibels={peakDecibels}
+      />
+      <NoiseFloorCalibrator
+        noiseFloor={noiseFloor}
+        onCalibrate={calibrateNoiseFloor}
       />
       <RecordButton
         isRecording={isRecording}
