@@ -1,39 +1,66 @@
 import { Audio } from 'expo-av';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 
 const MONITOR_INTERVAL = 100;
+const MIN_DECIBELS = -160;
+
+interface AudioRecorderState {
+  isRecording: boolean;
+  decibels: number;
+  peakDecibels: number;
+  error: string | null;
+}
 
 export function useAudioRecorder() {
-  const [isRecording, setIsRecording] = useState(false);
+  const [state, setState] = useState<AudioRecorderState>({
+    isRecording: false,
+    decibels: MIN_DECIBELS,
+    peakDecibels: MIN_DECIBELS,
+    error: null
+  });
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recordedUri, setRecordedUri] = useState<string | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [decibels, setDecibels] = useState(-160);
-  const [peakDecibels, setPeakDecibels] = useState(-160);
+
+  const handleError = useCallback((error: Error, message: string) => {
+    console.error(message, error);
+    setState(prev => ({ ...prev, error: message }));
+    Alert.alert('Erro', message);
+  }, []);
+
+  const cleanup = useCallback(async () => {
+    try {
+      if (sound?.unloadAsync) {
+        await sound.unloadAsync();
+      }
+      if (recording?.stopAndUnloadAsync) {
+        await recording.stopAndUnloadAsync();
+      }
+    } catch (error) {
+      handleError(error as Error, 'Erro durante a limpeza dos recursos');
+    }
+  }, [sound, recording, handleError]);
 
   useEffect(() => {
     return () => {
-      if (sound) {
-        sound.unloadAsync();
-      }
-      if (recording) {
-        recording.stopAndUnloadAsync();
-      }
+      cleanup();
     };
-  }, [sound, recording]);
+  }, [cleanup]);
 
   useEffect(() => {
-    if (decibels > peakDecibels) {
-      setPeakDecibels(decibels);
+    if (state.decibels > state.peakDecibels) {
+      setState(prev => ({ ...prev, peakDecibels: state.decibels }));
     }
-  }, [decibels]);
+  }, [state.decibels]);
 
-  const startRecording = async () => {
+  const startRecording = useCallback(async () => {
     try {
+      await cleanup();
+      
       const permission = await Audio.requestPermissionsAsync();
       if (!permission.granted) {
-        Alert.alert('Permissão necessária', 'Precisamos de permissão para acessar o microfone');
+        handleError(new Error('Permissão negada'), 'Precisamos de permissão para acessar o microfone');
         return;
       }
 
@@ -46,29 +73,28 @@ export function useAudioRecorder() {
         Audio.RecordingOptionsPresets.HIGH_QUALITY,
         (status) => {
           if (status.isRecording) {
-            const db = status.metering ? status.metering : -160;
-            setDecibels(db);
+            const db = status.metering ?? MIN_DECIBELS;
+            setState(prev => ({ ...prev, decibels: db }));
           }
         },
         MONITOR_INTERVAL
       );
+      
       setRecording(recording);
-      setIsRecording(true);
-
+      setState(prev => ({ ...prev, isRecording: true, error: null }));
     } catch (error) {
-      console.error('Erro ao iniciar gravação:', error);
-      Alert.alert('Erro', 'Não foi possível iniciar a gravação');
+      handleError(error as Error, 'Não foi possível iniciar a gravação');
     }
-  };
+  }, [handleError, cleanup]);
 
-  const stopRecording = async () => {
+  const stopRecording = useCallback(async () => {
     if (!recording) return;
 
     try {
       await recording.stopAndUnloadAsync();
       const uri = recording.getURI();
       setRecording(null);
-      setIsRecording(false);
+      setState(prev => ({ ...prev, isRecording: false, error: null }));
       setRecordedUri(uri);
 
       if (uri) {
@@ -77,18 +103,17 @@ export function useAudioRecorder() {
         await sound.playAsync();
       }
     } catch (error) {
-      console.error('Erro ao parar gravação:', error);
-      Alert.alert('Erro', 'Não foi possível parar a gravação');
+      handleError(error as Error, 'Não foi possível parar a gravação');
     }
-  };
+  }, [recording, handleError]);
 
-  return {
-    isRecording,
-    decibels,
-    peakDecibels,
+  const recorderState = useMemo(() => ({
+    ...state,
     startRecording,
     stopRecording,
-  };
+  }), [state, startRecording, stopRecording]);
+
+  return recorderState;
 }
 
 export default useAudioRecorder; 

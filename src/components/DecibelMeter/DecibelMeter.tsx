@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Text, View } from 'react-native';
 import { styles } from './styles';
 
@@ -6,7 +7,10 @@ interface DecibelMeterProps {
   peakDecibels: number;
 }
 
-export function DecibelMeter({ currentDecibels, peakDecibels }: DecibelMeterProps) {
+export const DecibelMeter = memo(function DecibelMeter({ 
+  currentDecibels, 
+  peakDecibels 
+}: DecibelMeterProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.decibelText}>
@@ -17,8 +21,6 @@ export function DecibelMeter({ currentDecibels, peakDecibels }: DecibelMeterProp
       </Text>
     </View>
   );
-}
-
-
+});
 
 export default DecibelMeter; 
