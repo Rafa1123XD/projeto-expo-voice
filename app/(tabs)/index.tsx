@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { DecibelMeter } from '../components/DecibelMeter';
-import { RecordButton } from '../components/RecordButton';
-import { useAudioRecorder } from '../hooks/useAudioRecorder';
+import { DecibelMeter } from '../../src/components/DecibelMeter/DecibelMeter';
+import { RecordButton } from '../../src/components/RecordButton/RecordButton';
+import { useAudioRecorder } from '../../src/hooks/useAudioRecorder';
 
 export default function TabOneScreen() {
   const { isRecording, decibels, peakDecibels, startRecording, stopRecording } = useAudioRecorder();

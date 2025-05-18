@@ -89,4 +89,6 @@ export function useAudioRecorder() {
     startRecording,
     stopRecording,
   };
-} 
+}
+
+export default useAudioRecorder; 

@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { styles } from './styles';
 
 interface DecibelMeterProps {
   currentDecibels: number;
@@ -18,12 +19,6 @@ export function DecibelMeter({ currentDecibels, peakDecibels }: DecibelMeterProp
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-  },
-  decibelText: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-}); 
+
+
+export default DecibelMeter; 

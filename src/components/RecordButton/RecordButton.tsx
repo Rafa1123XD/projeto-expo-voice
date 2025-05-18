@@ -12,4 +12,6 @@ export function RecordButton({ isRecording, onPress }: RecordButtonProps) {
       onPress={onPress}
     />
   );
-} 
+}
+
+export default RecordButton; 
