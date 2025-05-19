@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { DecibelMeter } from '../../src/components/DecibelMeter/DecibelMeter';
-import { NoiseFloorCalibrator } from '../../src/components/NoiseFloorCalibrator/NoiseFloorCalibrator';
 import { RecordButton } from '../../src/components/RecordButton/RecordButton';
 import { useAudioRecorder } from '../../src/hooks/useAudioRecorder';
 
@@ -10,10 +9,8 @@ export default function TabOneScreen() {
     isRecording, 
     decibels, 
     peakDecibels, 
-    noiseFloor,
     startRecording, 
-    stopRecording,
-    calibrateNoiseFloor 
+    stopRecording
   } = useAudioRecorder();
 
   return (
@@ -27,10 +24,6 @@ export default function TabOneScreen() {
       <DecibelMeter
         currentDecibels={decibels}
         peakDecibels={peakDecibels}
-      />
-      <NoiseFloorCalibrator
-        noiseFloor={noiseFloor}
-        onCalibrate={calibrateNoiseFloor}
       />
       <RecordButton
         isRecording={isRecording}
