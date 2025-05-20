@@ -8,7 +8,8 @@ export default function TabOneScreen() {
   const { 
     isRecording, 
     decibels, 
-    peakDecibels, 
+    peakDecibels,
+    averageDecibels,
     startRecording, 
     stopRecording
   } = useAudioRecorder();
@@ -24,6 +25,7 @@ export default function TabOneScreen() {
       <DecibelMeter
         currentDecibels={decibels}
         peakDecibels={peakDecibels}
+        averageDecibels={averageDecibels}
       />
       <RecordButton
         isRecording={isRecording}

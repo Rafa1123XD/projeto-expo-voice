@@ -5,11 +5,13 @@ import { Alert } from 'react-native';
 const MONITOR_INTERVAL = 100;
 const MIN_DECIBELS = -160;
 const DEFAULT_NOISE_FLOOR = -60; // Nível padrão para filtrar ruídos
+const AVERAGE_WINDOW_SIZE = 10; // Número de amostras para calcular a média
 
 interface AudioRecorderState {
   isRecording: boolean;
   decibels: number;
   peakDecibels: number;
+  averageDecibels: number; // Nova propriedade para a média
   error: string | null;
   noiseFloor: number; // Nível mínimo de decibéis para considerar
 }
@@ -19,12 +21,14 @@ export function useAudioRecorder() {
     isRecording: false,
     decibels: MIN_DECIBELS,
     peakDecibels: MIN_DECIBELS,
+    averageDecibels: MIN_DECIBELS, // Inicializa a média
     error: null,
     noiseFloor: DEFAULT_NOISE_FLOOR
   });
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recordedUri, setRecordedUri] = useState<string | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [decibelHistory, setDecibelHistory] = useState<number[]>([]); // Histórico para cálculo da média
 
   const handleError = useCallback((error: Error, message: string) => {
     console.error(message, error);
@@ -63,8 +67,19 @@ export function useAudioRecorder() {
   }, [cleanup]);
 
   useEffect(() => {
-    if (state.decibels > state.peakDecibels && state.decibels > state.noiseFloor) {
-      setState(prev => ({ ...prev, peakDecibels: state.decibels }));
+    if (state.decibels > state.noiseFloor) {
+      // Atualiza o pico
+      if (state.decibels > state.peakDecibels) {
+        setState(prev => ({ ...prev, peakDecibels: state.decibels }));
+      }
+
+      // Atualiza o histórico e calcula a média
+      setDecibelHistory(prev => {
+        const newHistory = [...prev, state.decibels].slice(-AVERAGE_WINDOW_SIZE);
+        const average = newHistory.reduce((sum, db) => sum + db, 0) / newHistory.length;
+        setState(prevState => ({ ...prevState, averageDecibels: average }));
+        return newHistory;
+      });
     }
   }, [state.decibels, state.noiseFloor]);
 
@@ -100,7 +115,15 @@ export function useAudioRecorder() {
       );
       
       setRecording(recording);
-      setState(prev => ({ ...prev, isRecording: true, error: null }));
+      setState(prev => ({ 
+        ...prev, 
+        isRecording: true, 
+        error: null,
+        decibels: MIN_DECIBELS,
+        peakDecibels: MIN_DECIBELS,
+        averageDecibels: MIN_DECIBELS
+      }));
+      setDecibelHistory([]); // Limpa o histórico ao iniciar nova gravação
     } catch (error) {
       handleError(error as Error, 'Não foi possível iniciar a gravação');
     }

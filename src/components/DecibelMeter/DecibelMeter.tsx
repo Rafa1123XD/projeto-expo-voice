@@ -5,23 +5,72 @@ import { getStyles } from './styles';
 interface DecibelMeterProps {
   currentDecibels: number;
   peakDecibels: number;
+  averageDecibels: number;
 }
 
 export const DecibelMeter = memo(function DecibelMeter({ 
   currentDecibels, 
-  peakDecibels 
+  peakDecibels,
+  averageDecibels 
 }: DecibelMeterProps) {
   const colorScheme = useColorScheme();
   const styles = getStyles(colorScheme);
 
+  // Função para determinar a cor baseada no nível de decibéis
+  const getDecibelColor = (db: number) => {
+    if (db < 50) return '#4CAF50'; // Verde para níveis seguros
+    if (db < 70) return '#FFC107'; // Amarelo para níveis moderados
+    if (db < 85) return '#FF9800'; // Laranja para níveis altos
+    return '#F44336'; // Vermelho para níveis perigosos
+  };
+
+  // Função para calcular a largura da barra de progresso
+  const getProgressWidth = (db: number) => {
+    const minDb = -20;
+    const maxDb = 100;
+    const normalizedDb = Math.max(minDb, Math.min(maxDb, db));
+    return ((normalizedDb - minDb) / (maxDb - minDb)) * 100;
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.decibelText}>
-        Nível de Som: {currentDecibels.toFixed(1)} dB
-      </Text>
-      <Text style={styles.decibelText}>
-        Pico: {peakDecibels.toFixed(1)} dB
-      </Text>
+      <View style={styles.meterContainer}>
+        <Text style={styles.decibelText}>
+          {currentDecibels.toFixed(1)} dB
+        </Text>
+        <View style={styles.progressBarContainer}>
+          <View 
+            style={[
+              styles.progressBar,
+              { 
+                width: `${getProgressWidth(currentDecibels)}%`,
+                backgroundColor: getDecibelColor(currentDecibels)
+              }
+            ]} 
+          />
+        </View>
+        <View style={styles.labelsContainer}>
+          <Text style={styles.label}>-20</Text>
+          <Text style={styles.label}>0</Text>
+          <Text style={styles.label}>50</Text>
+          <Text style={styles.label}>100</Text>
+        </View>
+      </View>
+      
+      <View style={styles.statsContainer}>
+        <View style={styles.statItem}>
+          <Text style={styles.statLabel}>Pico:</Text>
+          <Text style={[styles.statValue, { color: getDecibelColor(peakDecibels) }]}>
+            {peakDecibels.toFixed(1)} dB
+          </Text>
+        </View>
+        <View style={styles.statItem}>
+          <Text style={styles.statLabel}>Média:</Text>
+          <Text style={[styles.statValue, { color: getDecibelColor(averageDecibels) }]}>
+            {averageDecibels.toFixed(1)} dB
+          </Text>
+        </View>
+      </View>
     </View>
   );
 });
