@@ -119,7 +119,7 @@ export function useAudioRecorder() {
         peakDecibels: MIN_DECIBELS,
         averageDecibels: MIN_DECIBELS
       }));
-      setDecibelHistory([]); // Limpa o histórico ao iniciar nova gravação
+      setDecibelHistory([]);
     } catch (error) {
       handleError(error as Error, 'Não foi possível iniciar a gravação');
     }
