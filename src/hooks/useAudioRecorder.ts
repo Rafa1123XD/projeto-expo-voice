@@ -4,16 +4,16 @@ import { Alert } from 'react-native';
 
 const MONITOR_INTERVAL = 100;
 const MIN_DECIBELS = -160;
-const DEFAULT_NOISE_FLOOR = -60; // Nível padrão para filtrar ruídos
-const AVERAGE_WINDOW_SIZE = 10; // Número de amostras para calcular a média
+const DEFAULT_NOISE_FLOOR = -60; // noisefloor padrão 
+const AVERAGE_WINDOW_SIZE = 10; // quantidade da media
 
 interface AudioRecorderState {
   isRecording: boolean;
   decibels: number;
   peakDecibels: number;
-  averageDecibels: number; // Nova propriedade para a média
+  averageDecibels: number;
   error: string | null;
-  noiseFloor: number; // Nível mínimo de decibéis para considerar
+  noiseFloor: number; 
 }
 
 export function useAudioRecorder() {
@@ -21,14 +21,14 @@ export function useAudioRecorder() {
     isRecording: false,
     decibels: MIN_DECIBELS,
     peakDecibels: MIN_DECIBELS,
-    averageDecibels: MIN_DECIBELS, // Inicializa a média
+    averageDecibels: MIN_DECIBELS,
     error: null,
     noiseFloor: DEFAULT_NOISE_FLOOR
   });
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recordedUri, setRecordedUri] = useState<string | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [decibelHistory, setDecibelHistory] = useState<number[]>([]); // Histórico para cálculo da média
+  const [decibelHistory, setDecibelHistory] = useState<number[]>([]);
 
   const handleError = useCallback((error: Error, message: string) => {
     console.error(message, error);
@@ -51,7 +51,6 @@ export function useAudioRecorder() {
         setRecording(null);
       }
     } catch (error) {
-      // Ignora erros de recursos já descarregados
       if (error instanceof Error && 
           error.message.includes('already been unloaded')) {
         return;
@@ -68,12 +67,10 @@ export function useAudioRecorder() {
 
   useEffect(() => {
     if (state.decibels > state.noiseFloor) {
-      // Atualiza o pico
       if (state.decibels > state.peakDecibels) {
         setState(prev => ({ ...prev, peakDecibels: state.decibels }));
       }
 
-      // Atualiza o histórico e calcula a média
       setDecibelHistory(prev => {
         const newHistory = [...prev, state.decibels].slice(-AVERAGE_WINDOW_SIZE);
         const average = newHistory.reduce((sum, db) => sum + db, 0) / newHistory.length;
@@ -103,7 +100,6 @@ export function useAudioRecorder() {
         (status) => {
           if (status.isRecording) {
             const db = status.metering ?? MIN_DECIBELS;
-            // Só atualiza o estado se o nível de decibéis for maior que o noiseFloor
             if (db > state.noiseFloor) {
               setState(prev => ({ ...prev, decibels: db }));
             } else {
