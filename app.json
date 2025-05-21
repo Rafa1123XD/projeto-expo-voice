@@ -41,16 +41,17 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ],
-      [
-        "expo-audio",
-        {
-          "microphonePermission": "Allow $(Projeto Voice) to access your microphone."
-        }
       ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6b790217-2851-450e-ad9c-b9cbfd8c0bd6"
+      }
+    },
+    "owner": "rafaelcarlos"
   }
 }

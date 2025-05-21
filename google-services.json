@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "763808499575",
+    "project_id": "projeto-expo-voice",
+    "storage_bucket": "projeto-expo-voice.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763808499575:android:df22963b561a1166730372",
+        "android_client_info": {
+          "package_name": "com.expovoice.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "763808499575-uv5rpv3qg6ka3db843t2lslu3tcquvvu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm6WDMuKWPVkwtqigkbxPzl6nYr44blYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "763808499575-uv5rpv3qg6ka3db843t2lslu3tcquvvu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
