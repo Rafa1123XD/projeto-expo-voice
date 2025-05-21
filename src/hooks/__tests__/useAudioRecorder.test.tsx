@@ -7,7 +7,6 @@ const mockStopAndUnloadAsync = jest.fn(() => Promise.resolve());
 const mockGetURI = jest.fn();
 const mockUnloadAsync = jest.fn(() => Promise.resolve());
 
-// Mock global para garantir que qualquer objeto recording tenha stopAndUnloadAsync
 class MockRecording {
   stopAndUnloadAsync = mockStopAndUnloadAsync;
   getURI = mockGetURI;
