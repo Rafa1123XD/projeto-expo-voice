@@ -16,7 +16,7 @@ export const DecibelMeter = memo(function DecibelMeter({
   const colorScheme = useColorScheme();
   const styles = getStyles(colorScheme);
 
-  // Função para determinar a cor baseada no nível de decibéis
+  // cor baseada em nível 
   const getDecibelColor = (db: number) => {
     if (db < 50) return '#4CAF50'; // Verde para níveis seguros
     if (db < 70) return '#FFC107'; // Amarelo para níveis moderados
@@ -24,7 +24,7 @@ export const DecibelMeter = memo(function DecibelMeter({
     return '#F44336'; // Vermelho para níveis perigosos
   };
 
-  // Função para calcular a largura da barra de progresso
+  // largura da barra
   const getProgressWidth = (db: number) => {
     const minDb = -20;
     const maxDb = 100;
