@@ -1,0 +1,25 @@
+name: Build APK
+on:
+  push:
+    branches:
+      - Firebase
+
+jobs:
+  publish:
+    name: Install and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 22.x
+      - name: Expo and EAS setup
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: 6.x
+          eas-version: latest
+          token: ${{ secrets.EAD_BUILD }}
+      - name: Install dependencies
+        run: yarn install
+      - name: Build on EAS
+        run: eas build -p android --profile development
