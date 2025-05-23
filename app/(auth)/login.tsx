@@ -2,13 +2,15 @@ import { auth } from '@/firebaseConfig';
 import { router } from 'expo-router';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, useColorScheme } from 'react-native';
 
 export default function LoginScreen() {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const colorScheme = useColorScheme();
+    const styles = getStyles(colorScheme);
 
     const handleLogin = async () => {
         try {
@@ -104,28 +106,29 @@ export default function LoginScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const getStyles = (colorScheme: 'light' | 'dark' | null | undefined) => StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#f0f0f0',
+        backgroundColor: colorScheme === 'dark' ? '#1e1e1e' : '#f0f0f0',
     },
     title: {
         fontSize: 28,
         fontWeight: 'bold',
         marginBottom: 30,
-        color: '#333',
+        color: colorScheme === 'dark' ? '#ffffff' : '#333',
     },
     input: {
         width: '100%',
         marginVertical: 10,
         padding: 15,
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: colorScheme === 'dark' ? '#555' : '#ccc',
         borderRadius: 8,
-        backgroundColor: '#fff',
+        backgroundColor: colorScheme === 'dark' ? '#333' : '#fff',
+        color: colorScheme === 'dark' ? '#fff' : '#000',
         fontSize: 16,
     },
     loginButton: {
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     switchText: {
-        color: '#007AFF',
+        color: colorScheme === 'dark' ? '#0094FF' : '#007AFF',
         fontSize: 16,
         textDecorationLine: 'underline',
     }
