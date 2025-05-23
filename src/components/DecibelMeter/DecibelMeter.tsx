@@ -16,15 +16,15 @@ export const DecibelMeter = memo(function DecibelMeter({
   const colorScheme = useColorScheme();
   const styles = getStyles(colorScheme);
 
-  // cor baseada em nível 
+  // cor baseada na altura
   const getDecibelColor = (db: number) => {
-    if (db < 50) return '#4CAF50'; // Verde para níveis seguros
-    if (db < 70) return '#FFC107'; // Amarelo para níveis moderados
-    if (db < 85) return '#FF9800'; // Laranja para níveis altos
-    return '#F44336'; // Vermelho para níveis perigosos
+    if (db < 50) return '#4CAF50'; 
+    if (db < 70) return '#FFC107';
+    if (db < 85) return '#FF9800';
+    return '#F44336';
   };
 
-  // largura da barra
+
   const getProgressWidth = (db: number) => {
     const minDb = -20;
     const maxDb = 100;
