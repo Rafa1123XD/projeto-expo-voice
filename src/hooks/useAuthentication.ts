@@ -12,7 +12,6 @@ export function useAuthentication() {
       setLoading(false);
     });
 
-    // Limpar a assinatura ao desmontar o componente
     return () => unsubscribe();
   }, []);
 
