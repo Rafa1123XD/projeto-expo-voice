@@ -17,7 +17,7 @@ jobs:
         uses: expo/expo-github-action@v7
         with:
           expo-version: 6.x
-          eas-version: 7.14.0
+          eas-version: 7.x
           token: ${{ secrets.EAS_BUILD }}
       - name: Install dependencies
         run: yarn install
