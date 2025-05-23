@@ -36,7 +36,7 @@ export default function LoginScreen() {
             return;
         }
         try {
-            const user = await createUserWithEmailAndPassword(auth, email, password);
+            await createUserWithEmailAndPassword(auth, email, password);
             Alert.alert('Sucesso', 'Conta criada com sucesso! Faça login agora.');
             setIsLogin(true);
             setEmail('');
