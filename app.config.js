@@ -51,10 +51,11 @@ export default {
         "extra": {
           "router": {},
           "eas": {
-            "projectId": "6b790217-2851-450e-ad9c-b9cbfd8c0bd6"
+            "projectId": "32f44554-6059-412b-b91d-bc30f3ea00ed"
           }
         },
-        "owner": "rafaelcarlos"
+        "owner": "projetos_unifecaf"
 
     }
+    
  }
