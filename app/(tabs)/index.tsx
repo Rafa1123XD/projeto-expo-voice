@@ -13,7 +13,8 @@ export default function TabOneScreen() {
     peakDecibels,
     averageDecibels,
     startRecording, 
-    stopRecording
+    stopRecording,
+    successMessage
   } = useAudioRecorder();
 
   useFocusEffect(
@@ -34,6 +35,11 @@ export default function TabOneScreen() {
       ]}>
         Gravador de Voz
       </Text>
+
+      {successMessage && (
+        <Text style={styles.successMessage}>{successMessage}</Text>
+      )}
+
       <DecibelMeter
         currentDecibels={decibels}
         peakDecibels={peakDecibels}
@@ -58,5 +64,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  successMessage: {
+    color: 'green',
+    marginTop: 10,
+    fontSize: 16,
   },
 });
