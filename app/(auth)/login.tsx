@@ -73,6 +73,7 @@ export default function LoginScreen() {
                 style={styles.input}
                 placeholder="Senha"
                 secureTextEntry
+                autoCapitalize="none"
                 value={password}
                 onChangeText={setPassword}
             />
@@ -82,6 +83,7 @@ export default function LoginScreen() {
                     style={styles.input}
                     placeholder="Confirmar Senha"
                     secureTextEntry
+                    autoCapitalize="none"
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
                 />

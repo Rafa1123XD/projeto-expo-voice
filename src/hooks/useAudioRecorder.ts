@@ -16,6 +16,18 @@ interface AudioRecorderState {
   noiseFloor: number; 
 }
 
+// Função throttle simples com tipagem
+const simpleThrottle = <T extends (...args: any[]) => any>(func: T, delay: number) => {
+  let lastCallTime = 0;
+  return function(this: ThisParameterType<T>, ...args: Parameters<T>) {
+    const now = Date.now();
+    if (now - lastCallTime >= delay) {
+      lastCallTime = now;
+      func.apply(this, args);
+    }
+  };
+};
+
 export function useAudioRecorder() {
   const [state, setState] = useState<AudioRecorderState>({
     isRecording: false,
@@ -29,6 +41,10 @@ export function useAudioRecorder() {
   const [recordedUri, setRecordedUri] = useState<string | null>(null);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [decibelHistory, setDecibelHistory] = useState<number[]>([]);
+
+  const throttledSetDecibels = useMemo(() => simpleThrottle((db: number) => {
+    setState(prev => ({ ...prev, decibels: db }));
+  }, 100), [setState]); // 300ms de throttle
 
   const handleError = useCallback((error: Error, message: string) => {
     console.error(message, error);
@@ -101,9 +117,11 @@ export function useAudioRecorder() {
           if (status.isRecording) {
             const db = status.metering ?? MIN_DECIBELS;
             if (db > state.noiseFloor) {
-              setState(prev => ({ ...prev, decibels: db }));
+              // Chamada throtteada para atualizar os decibéis
+              throttledSetDecibels(db);
             } else {
-              setState(prev => ({ ...prev, decibels: MIN_DECIBELS }));
+              // Chamada throtteada para resetar os decibéis se estiver abaixo do noise floor
+              throttledSetDecibels(MIN_DECIBELS);
             }
           }
         },
@@ -123,7 +141,7 @@ export function useAudioRecorder() {
     } catch (error) {
       handleError(error as Error, 'Não foi possível iniciar a gravação');
     }
-  }, [handleError, cleanup, state.noiseFloor]);
+  }, [handleError, cleanup, state.noiseFloor, throttledSetDecibels]); // Adicionado throttledSetDecibels
 
   const stopRecording = useCallback(async () => {
     if (!recording) return;

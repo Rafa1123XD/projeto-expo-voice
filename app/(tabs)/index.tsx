@@ -1,3 +1,5 @@
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback } from 'react';
 import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { DecibelMeter } from '../../src/components/DecibelMeter/DecibelMeter';
 import { RecordButton } from '../../src/components/RecordButton/RecordButton';
@@ -13,6 +15,16 @@ export default function TabOneScreen() {
     startRecording, 
     stopRecording
   } = useAudioRecorder();
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (isRecording) {
+          stopRecording();
+        }
+      };
+    }, [isRecording, stopRecording])
+  );
 
   return (
     <View style={styles.container}>
