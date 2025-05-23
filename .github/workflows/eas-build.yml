@@ -2,7 +2,7 @@ name: Build APK
 on:
   push:
     branches:
-      - Firebase
+      - main
 
 jobs:
   publish:
@@ -18,8 +18,8 @@ jobs:
         with:
           expo-version: 6.x
           eas-version: latest
-          token: ${{ secrets.EAD_BUILD }}
+          token: ${{ secrets.EAS_BUILD }}
       - name: Install dependencies
         run: yarn install
-      - name: Build on EAS
-        run: eas build -p android --profile development
+      - name: Build on EAS for preview
+        run: eas build -p android --profile preview
