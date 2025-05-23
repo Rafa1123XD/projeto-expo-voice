@@ -1,4 +1,6 @@
+import { auth, storage } from '@/firebaseConfig';
 import { Audio } from 'expo-av';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 
@@ -16,7 +18,7 @@ interface AudioRecorderState {
   noiseFloor: number; 
 }
 
-// Função throttle simples com tipagem
+
 const simpleThrottle = <T extends (...args: any[]) => any>(func: T, delay: number) => {
   let lastCallTime = 0;
   return function(this: ThisParameterType<T>, ...args: Parameters<T>) {
@@ -44,7 +46,7 @@ export function useAudioRecorder() {
 
   const throttledSetDecibels = useMemo(() => simpleThrottle((db: number) => {
     setState(prev => ({ ...prev, decibels: db }));
-  }, 100), [setState]); // 300ms de throttle
+  }, 100), [setState]);
 
   const handleError = useCallback((error: Error, message: string) => {
     console.error(message, error);
@@ -117,10 +119,8 @@ export function useAudioRecorder() {
           if (status.isRecording) {
             const db = status.metering ?? MIN_DECIBELS;
             if (db > state.noiseFloor) {
-              // Chamada throtteada para atualizar os decibéis
               throttledSetDecibels(db);
             } else {
-              // Chamada throtteada para resetar os decibéis se estiver abaixo do noise floor
               throttledSetDecibels(MIN_DECIBELS);
             }
           }
@@ -141,7 +141,7 @@ export function useAudioRecorder() {
     } catch (error) {
       handleError(error as Error, 'Não foi possível iniciar a gravação');
     }
-  }, [handleError, cleanup, state.noiseFloor, throttledSetDecibels]); // Adicionado throttledSetDecibels
+  }, [handleError, cleanup, state.noiseFloor, throttledSetDecibels]); 
 
   const stopRecording = useCallback(async () => {
     if (!recording) return;
@@ -153,13 +153,23 @@ export function useAudioRecorder() {
       setState(prev => ({ ...prev, isRecording: false, error: null }));
       setRecordedUri(uri);
 
-      if (uri) {
-        const { sound } = await Audio.Sound.createAsync({ uri });
-        setSound(sound);
-        await sound.playAsync();
+      if (uri && auth.currentUser) {
+        const filename = `recording-${Date.now()}.m4a`;
+        const storageRef = ref(storage, `recordings/${auth.currentUser.uid}/${filename}`);
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        await uploadBytes(storageRef, blob);
+
+        console.log('Gravação enviada para o Firebase Storage!');
+
+        const downloadUrl = await getDownloadURL(storageRef);
+        console.log('URL de download:', downloadUrl);
+
+      } else if (!auth.currentUser) {
+        handleError(new Error('Usuário não autenticado'), 'Não foi possível salvar a gravação. Faça login novamente.');
       }
     } catch (error) {
-      handleError(error as Error, 'Não foi possível parar a gravação');
+      handleError(error as Error, 'Não foi possível parar a gravação ou fazer upload');
     }
   }, [recording, handleError]);
 
