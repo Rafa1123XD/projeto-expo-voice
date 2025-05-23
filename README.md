@@ -11,6 +11,12 @@ git clone https://github.com/Rafa1123XD/projeto-expo-voice
 npm install --legacy-peer-deps
 ```
 
+#### Pre Build do Local Development (Opcional se já tiver usando do EAS)
+```
+npx expo prebuild
+```
+
+
 #### Iniciar
 ```
 npm run start
