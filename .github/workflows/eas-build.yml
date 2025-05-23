@@ -18,7 +18,7 @@ jobs:
         with:
           expo-version: 6.x
           eas-version: latest
-          token: ${{ secrets.EAD_BUILD }}
+          token: ${{ secrets.EAS_BUILD }}
       - name: Install dependencies
         run: yarn install
       - name: Build on EAS
