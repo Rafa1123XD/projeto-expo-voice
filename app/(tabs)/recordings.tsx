@@ -1,7 +1,8 @@
 import { auth } from '@/firebaseConfig';
+import { useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { deleteObject, getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RecordingItem } from '../../src/components/RecordingItem/RecordingItem';
@@ -44,17 +45,19 @@ export default function RecordingsScreen() {
     }
   }, []);
 
-  useEffect(() => {
-    fetchRecordings();
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecordings();
 
-    return () => {
-      if (playingSound) {
-        playingSound.unloadAsync();
-        setPlayingSound(null);
-        setCurrentPlayingUri(null);
-      }
-    };
-  }, [fetchRecordings, playingSound]);
+      return () => {
+        if (playingSound) {
+          playingSound.unloadAsync();
+          setPlayingSound(null);
+          setCurrentPlayingUri(null);
+        }
+      };
+    }, [fetchRecordings, playingSound])
+  );
 
   const playRecording = async (uri: string) => {
     if (playingSound && currentPlayingUri === uri) {
