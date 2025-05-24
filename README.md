@@ -23,6 +23,7 @@ npm install --legacy-peer-deps
 npx expo prebuild
 ```
 https://expo.dev/accounts/projetos_unifecaf/projects/projeto-expo-voice/builds/4f927f35-04bd-42c5-a9fa-2fb863c58dd0
+abrir esse link no emulador ou no seu dispositivo e continuar seguindo os passos
 
 #### Iniciar
 ```
