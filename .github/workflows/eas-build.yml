@@ -22,4 +22,4 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Build on EAS for preview
-        run: eas build -p android --profile preview
+        run: eas build -p android --profile preview --non-interactive
