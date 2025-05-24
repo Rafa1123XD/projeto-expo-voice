@@ -7,7 +7,7 @@ https://expo.dev/artifacts/eas/3pPqxBykAEFWoeFQL5RAFn.apk
 
 
 
-## Instalação e uso:
+## Instalação do development build e uso:
 #### Clonar repositório
 ```
 git clone https://github.com/Rafa1123XD/projeto-expo-voice
