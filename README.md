@@ -1,4 +1,11 @@
 # Expo Voice
+# Baixa a preview (apk) e teste no seu dispositivo 
+https://expo.dev/artifacts/eas/3pPqxBykAEFWoeFQL5RAFn.apk
+
+
+
+
+
 
 ## Instalação e uso:
 #### Clonar repositório
