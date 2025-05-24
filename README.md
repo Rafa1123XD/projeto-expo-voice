@@ -1,5 +1,5 @@
 # Expo Voice
-# Baixa a preview (apk) e teste no seu dispositivo 
+# Baixe a preview (apk) e teste no seu dispositivo 
 https://expo.dev/artifacts/eas/3pPqxBykAEFWoeFQL5RAFn.apk
 
 
